@@ -583,3 +583,40 @@
       Đã chuyển khoản / Kích hoạt ngay
     </button>
   </div>
+<!-- Các phần nội dung hoặc modal khác của bạn ở đây -->
+
+    <!-- Đoạn JavaScript xử lý sự kiện bấm nút và bật bảng MoMo -->
+    <script>
+      let currentPlanGB = 15;
+
+      function openMomoCheckout(planName, amount, storageGB) {
+        currentPlanGB = storageGB;
+        const planNameEl = document.getElementById('momoPlanName');
+        const amountEl = document.getElementById('momoAmount');
+        
+        if(planNameEl) planNameEl.innerText = planName;
+        if(amountEl) amountEl.innerText = amount.toLocaleString('vi-VN') + 'đ';
+
+        // Hiện modal MoMo
+        const momoModal = document.getElementById('momoModal');
+        if(momoModal) {
+          momoModal.classList.remove('hidden');
+          momoModal.classList.add('flex');
+        }
+      }
+
+      function closeMomoModal() {
+        const momoModal = document.getElementById('momoModal');
+        if(momoModal) {
+          momoModal.classList.add('hidden');
+          momoModal.classList.remove('flex');
+        }
+      }
+
+      function confirmPaymentSuccess() {
+        alert(`🎉 Thanh toán thành công! Dung lượng lưu trữ của bạn đã được nâng cấp lên ${currentPlanGB}GB.`);
+        closeMomoModal();
+      }
+    </script>
+  </body>
+</html>

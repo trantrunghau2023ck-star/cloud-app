@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloudVault - Lưu Trữ & Phân Loại Hình Ảnh Thông Minh</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-zinc-50 text-zinc-800 font-sans antialiased min-h-screen flex flex-col selection:bg-zinc-900 selection:text-white">
+
+  <!-- ==================== TOP NAVIGATION HEADER ==================== -->
+  <header class="bg-white/80 backdrop-blur-md border-b border-zinc-200 sticky top-0 z-40 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('landing')">
+        <div class="p-2 bg-zinc-900 text-white rounded-xl shadow-md">
+          <i data-lucide="cloud-lightning" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <span class="text-base font-extrabold text-zinc-900 tracking-tight leading-none block">CloudVault</span>
+          <span class="text-[10px] text-zinc-400 font-medium tracking-wide">SMART STORAGE</span>
+        </div>
+      </div>
+
+      <!-- Landing Navigation Links (Hidden in App Mode) -->
+      <nav id="landingNav" class="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-600">
+        <a href="#features" class="hover:text-zinc-900 transition">Tính năng</a>
+        <a href="#storage" class="hover:text-zinc-900 transition">Dung lượng</a>
+        <a href="#about" class="hover:text-zinc-900 transition">Giới thiệu</a>
+      </nav>
+
+      <!-- App Search Bar (Only visible in Dashboard View) -->
+      <div id="dashSearch" class="hidden flex-1 max-w-xs md:max-w-md mx-6">
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+          <input type="text" id="searchInput" oninput="renderFiles()" placeholder="Tìm kiếm tệp, nhãn (#Du_lịch)..." 
+            class="w-full pl-10 pr-4 py-1.5 bg-zinc-100 hover:bg-zinc-100/80 focus:bg-white rounded-xl text-xs border border-transparent focus:border-zinc-300 outline-none transition">
+        </div>
+      </div>
+
+      <!-- Header Action Buttons -->
+      <div class="flex items-center gap-3">
+        <button onclick="switchTab('landing')" id="btnTabLanding" class="px-3 py-1.5 text-xs font-semibold rounded-xl bg-zinc-100 text-zinc-700 hover:bg-zinc-200 transition">
+          Trang chủ
+        </button>
+        <button onclick="switchTab('app')" id="btnTabApp" class="px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-zinc-900 text-white hover:bg-zinc-800 shadow-sm transition flex items-center gap-1.5">
+          <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+          <span>Mở App</span>
+        </button>
+        <div class="h-4 w-px bg-zinc-200 hidden sm:block"></div>
+        <button onclick="toggleModal('loginModal', true)" class="hidden sm:block text-xs font-semibold text-zinc-700 hover:text-zinc-900 px-2 py-1">
+          Đăng nhập
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==================== VIEW 1: LANDING PAGE ==================== -->
+  <div id="viewLanding" class="flex-1">
+    
+    <!-- Hero Banner Section -->
+    <section class="py-20 md:py-28 px-4 text-center max-w-4xl mx-auto space-y-6">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 border border-zinc-200 text-xs font-medium text-zinc-700 mb-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        Giải pháp lưu trữ & Phân loại hình ảnh tối giản
+      </div>
+      <h1 class="text-4xl sm:text-6xl font-extrabold text-zinc-900 tracking-tight leading-tight">
+        Lưu trữ & Phân loại hình ảnh <br class="hidden sm:inline"/> 
+        <span class="bg-gradient-to-r from-zinc-900 via-zinc-700 to-zinc-500 bg-clip-text text-transparent">Thông minh, Nhanh chóng & Tối giản</span>
+      </h1>
+      <p class="text-base sm:text-lg text-zinc-600 max-w-2xl mx-auto font-normal leading-relaxed">
+        Tải lên, quản lý dung lượng và tự động sắp xếp toàn bộ kho ảnh hay tài liệu của bạn theo thẻ nhãn khoa học. Hoàn toàn không quảng cáo, giao diện sang trọng.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+        <button onclick="switchTab('app')" class="w-full sm:w-auto px-7 py-3.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2">
+          <span>Khám phá ngay ứng dụng</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+        <a href="#features" class="w-full sm:w-auto px-7 py-3.5 bg-white border border-zinc-300 hover:bg-zinc-50 text-zinc-700 rounded-xl text-sm font-semibold transition">
+          Tính năng nổi bật
+        </a>
+      </div>
+    </section>
+
+    <!-- App Preview Mockup Window -->
+    <section class="max-w-5xl mx-auto px-4 pb-20">
+      <div class="bg-white border border-zinc-200/80 rounded-2xl p-2 sm:p-3 shadow-2xl relative overflow-hidden">
+        <div class="flex items-center gap-2 mb-3 px-3 pt-1">
+          <div class="w-3 h-3 rounded-full bg-red-400"></div>
+          <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+          <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
+          <span class="text-xs text-zinc-400 font-mono ml-2">cloudvault.app/dashboard</span>
+        </div>
+        <div class="relative rounded-xl overflow-hidden border border-zinc-100">
+          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&q=80" alt="Dashboard Preview" class="w-full h-80 sm:h-96 object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/60 via-transparent to-transparent flex items-end p-6">
+            <button onclick="switchTab('app')" class="px-5 py-2.5 bg-white/90 backdrop-blur-md text-zinc-900 hover:bg-white rounded-xl text-xs font-bold shadow-md transition flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-4 h-4"></i> Mở bản xem trước trực tiếp
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-white border-t border-zinc-200">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="text-center max-w-2xl mx-auto mb-16 space-y-3">
+          <h2 class="text-2xl sm:text-3xl font-bold text-zinc-900">Tính năng vượt trội</h2>
+          <p class="text-sm text-zinc-500">Tối ưu hóa từng chi tiết cho việc sắp xếp ảnh cá nhân chuyên nghiệp.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <!-- Feature 1 -->
+          <div class="bg-zinc-50 p-6 rounded-2xl border border-zinc-200/80 space-y-4 hover:border-zinc-300 transition">
+            <div class="w-10 h-10 bg-zinc-900 text-white rounded-xl flex items-center justify-center shadow-sm">
+              <i data-lucide="tags" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-base font-bold text-zinc-900">Phân loại thẻ thông minh</h3>
+            <p class="text-xs text-zinc-600 leading-relaxed">Gắn nhãn hình ảnh nhanh chóng với các tag #Du_lịch, #Công_việc, #Cá_nhân để dễ dàng lọc chỉ trong 1 click.</p>
+          </div>
+          <!-- Feature 2 -->
+          <div class="bg-zinc-50 p-6 rounded-2xl border border-zinc-200/80 space-y-4 hover:border-zinc-300 transition">
+            <div class="w-10 h-10 bg-zinc-900 text-white rounded-xl flex items-center justify-center shadow-sm">
+              <i data-lucide="mouse-pointer-click" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-base font-bold text-zinc-900">Kéo thả siêu tốc</h3>
+            <p class="text-xs text-zinc-600 leading-relaxed">Tải ảnh lên trực tiếp bằng thao tác kéo thả mượt mà, hỗ trợ tự động tính dung lượng và định dạng tệp.</p>
+          </div>
+          <!-- Feature 3 -->
+          <div class="bg-zinc-50 p-6 rounded-2xl border border-zinc-200/80 space-y-4 hover:border-zinc-300 transition">
+            <div class="w-10 h-10 bg-zinc-900 text-white rounded-xl flex items-center justify-center shadow-sm">
+              <i data-lucide="shield-check" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-base font-bold text-zinc-900">Bảo mật & Tối giản</h3>
+            <p class="text-xs text-zinc-600 leading-relaxed">Không gian lưu trữ cá nhân được mã hóa an toàn, giao diện zinc/slate hiện đại không gây rối mắt.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-zinc-900 text-zinc-400 py-10 border-t border-zinc-800 text-xs">
+      <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2 text-white font-bold">
+          <i data-lucide="cloud-lightning" class="w-4 h-4"></i> CloudVault Storage
+        </div>
+        <p>© 2026 CloudVault Inc. Tất cả quyền được bảo lưu.</p>
+      </div>
+    </footer>
+  </div>
+
+
+  <!-- ==================== VIEW 2: APP DASHBOARD ==================== -->
+  <div id="viewApp" class="flex-1 hidden max-w-[1600px] w-full mx-auto flex flex-col md:flex-row min-h-[calc(100vh-4rem)]">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="w-full md:w-64 bg-white border-r border-zinc-200 p-5 flex flex-col justify-between space-y-6 shrink-0">
+      <div class="space-y-6">
+        <!-- Main Upload Button -->
+        <label class="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold rounded-xl shadow-sm cursor-pointer transition">
+          <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+          <span>Tải tệp mới lên</span>
+          <input type="file" id="fileInput" multiple onchange="handleFiles(this.files)" class="hidden">
+        </label>
+
+        <!-- Category Menu -->
+        <div>
+          <p class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-2 px-2">Danh mục</p>
+          <nav class="space-y-1">
+            <button onclick="setFilter('all')" id="cat-all" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium bg-zinc-900 text-white shadow-sm">
+              <span class="flex items-center gap-2.5"><i data-lucide="grid" class="w-4 h-4"></i> Tất cả tệp</span>
+              <span id="cnt-all" class="text-[10px] opacity-70">0</span>
+            </button>
+            <button onclick="setFilter('image')" id="cat-image" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-100 transition">
+              <span class="flex items-center gap-2.5"><i data-lucide="image" class="w-4 h-4"></i> Thư viện ảnh</span>
+              <span id="cnt-image" class="text-[10px] text-zinc-400">0</span>
+            </button>
+            <button onclick="setFilter('document')" id="cat-document" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-100 transition">
+              <span class="flex items-center gap-2.5"><i data-lucide="file-text" class="w-4 h-4"></i> Tài liệu</span>
+              <span id="cnt-document" class="text-[10px] text-zinc-400">0</span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- Tags Filter Section -->
+        <div>
+          <p class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-2 px-2">Bộ lọc Thẻ (Tags)</p>
+          <div class="flex flex-wrap gap-1.5 px-1">
+            <button onclick="setTagFilter('Cá_nhân')" class="px-2.5 py-1 bg-zinc-100 hover:bg-zinc-900 hover:text-white rounded-lg text-xs font-medium text-zinc-700 transition">#Cá_nhân</button>
+            <button onclick="setTagFilter('Du_lịch')" class="px-2.5 py-1 bg-zinc-100 hover:bg-zinc-900 hover:text-white rounded-lg text-xs font-medium text-zinc-700 transition">#Du_lịch</button>
+            <button onclick="setTagFilter('Công_việc')" class="px-2.5 py-1 bg-zinc-100 hover:bg-zinc-900 hover:text-white rounded-lg text-xs font-medium text-zinc-700 transition">#Công_việc</button>
+            <button onclick="setTagFilter('Học_tập')" class="px-2.5 py-1 bg-zinc-100 hover:bg-zinc-900 hover:text-white rounded-lg text-xs font-medium text-zinc-700 transition">#Học_tập</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dynamic Storage Progress Bar -->
+      <div class="bg-zinc-100 p-4 rounded-xl border border-zinc-200/80 space-y-2.5">
+        <div class="flex items-center justify-between text-xs font-semibold text-zinc-700">
+          <span class="flex items-center gap-1.5"><i data-lucide="database" class="w-3.5 h-3.5 text-zinc-500"></i> Dung lượng</span>
+          <span id="storageText">0 MB / 15 GB</span>
+        </div>
+        <div class="w-full bg-zinc-200 h-2 rounded-full overflow-hidden">
+          <div id="storageBar" class="bg-zinc-900 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+        </div>
+        <p class="text-[10px] text-zinc-400">Gói lưu trữ cá nhân Miễn Phí</p>
+      </div>
+    </aside>
+
+    <!-- Main Content Grid Area -->
+    <main class="flex-1 p-6 space-y-6 overflow-y-auto">
+
+      <!-- Drag & Drop Upload Zone -->
+      <div id="dropZone" class="border-2 border-dashed border-zinc-300 bg-white hover:bg-zinc-50/80 rounded-2xl p-6 text-center transition cursor-pointer relative shadow-sm group">
+        <input type="file" id="dragFileInput" multiple onchange="handleFiles(this.files)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pointer-events-none">
+          <div class="p-3 bg-zinc-100 text-zinc-700 rounded-xl group-hover:bg-zinc-900 group-hover:text-white transition">
+            <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+          </div>
+          <div class="text-center sm:text-left">
+            <p class="text-sm font-semibold text-zinc-900">Kéo thả ảnh hoặc tài liệu vào đây để tải lên</p>
+            <p class="text-xs text-zinc-400 mt-0.5">Hỗ trợ JPG, PNG, WEBP, PDF, DOCX (Phân loại tự động)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Title & Upload Tag Selector -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-zinc-200">
+        <div class="flex items-center gap-3">
+          <h2 id="sectionTitle" class="text-lg font-bold text-zinc-900">Tất cả tệp</h2>
+          <span id="activeTagBadge" class="hidden text-xs bg-zinc-900 text-white px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1">
+            <span id="activeTagText">#Tag</span>
+            <i data-lucide="x" class="w-3 h-3 cursor-pointer" onclick="clearTagFilter()"></i>
+          </span>
+        </div>
+
+        <!-- Tag Selection for New Uploads -->
+        <div class="flex items-center gap-2 text-xs">
+          <span class="text-zinc-500 font-medium">Gắn nhãn khi tải lên:</span>
+          <select id="selectedTag" class="bg-white border border-zinc-300 rounded-xl px-3 py-1.5 font-medium focus:ring-1 focus:ring-zinc-900 outline-none shadow-sm">
+            <option value="Cá_nhân">#Cá_nhân</option>
+            <option value="Du_lịch">#Du_lịch</option>
+            <option value="Công_việc">#Công_việc</option>
+            <option value="Học_tập">#Học_tập</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Dynamic File Grid Container -->
+      <div id="fileContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <!-- Rendered dynamically by JavaScript -->
+      </div>
+
+    </main>
+  </div>
+
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Modal 1: Login / Register -->
+  <div id="loginModal" class="fixed inset-0 bg-zinc-950/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-zinc-100 space-y-5 relative">
+      <button onclick="toggleModal('loginModal', false)" class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="text-center space-y-1">
+        <div class="w-10 h-10 bg-zinc-900 text-white rounded-xl flex items-center justify-center mx-auto mb-2">
+          <i data-lucide="cloud-lightning" class="w-5 h-5"></i>
+        </div>
+        <h3 class="text-lg font-bold text-zinc-900">Đăng nhập CloudVault</h3>
+        <p class="text-xs text-zinc-500">Đồng bộ và quản lý kho ảnh cá nhân của bạn</p>
+      </div>
+
+      <form onsubmit="event.preventDefault(); toggleModal('loginModal', false); switchTab('app');" class="space-y-3">
+        <div>
+          <label class="block text-xs font-medium text-zinc-700 mb-1">Email</label>
+          <input type="email" required placeholder="name@domain.com" class="w-full px-3.5 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-xs focus:ring-2 focus:ring-zinc-900 outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-zinc-700 mb-1">Mật khẩu</label>
+          <input type="password" required placeholder="••••••••" class="w-full px-3.5 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-xs focus:ring-2 focus:ring-zinc-900 outline-none">
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-xs font-semibold shadow-sm transition">
+          Đăng nhập ngay
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Lightbox Image Preview -->
+  <div id="previewModal" class="fixed inset-0 bg-zinc-950/85 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
+    <div class="relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center justify-center">
+      <button onclick="toggleModal('previewModal', false)" class="absolute -top-10 right-0 text-white hover:text-zinc-300">
+        <i data-lucide="x" class="w-7 h-7"></i>
+      </button>
+      <img id="previewImage" src="" alt="Full Preview" class="max-w-full max-h-[80vh] rounded-xl shadow-2xl object-contain">
+      <p id="previewTitle" class="text-white text-xs mt-3 font-mono"></p>
+    </div>
+  </div>
+
+
+  <!-- ==================== APPLICATION JAVASCRIPT ==================== -->
+  <script>
+    // Initial State & Mock Data
+    let fileList = [
+      { id: 1, name: 'Bien_Nhat_Trang.jpg', type: 'image', tag: 'Du_lịch', sizeMB: 4.5, url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80', date: '2026-10-22' },
+      { id: 2, name: 'Ke_Hoach_Thiet_Ke_2026.pdf', type: 'document', tag: 'Công_việc', sizeMB: 2.1, url: '', date: '2026-10-24' },
+      { id: 3, name: 'Anh_Ky_Yeu_Lop.jpg', type: 'image', tag: 'Học_tập', sizeMB: 6.8, url: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&q=80', date: '2026-10-20' },
+      { id: 4, name: 'Chup_Chan_Dung.jpg', type: 'image', tag: 'Cá_nhân', sizeMB: 3.2, url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80', date: '2026-10-18' }
+    ];
+
+    let currentCategory = 'all';
+    let currentTag = null;
+    const MAX_STORAGE_MB = 15360; // 15 GB Limit
+
+    // Initialize Lucide Icons & Initial Render
+    lucide.createIcons();
+    renderFiles();
+
+    // Tab Switch Logic (Landing vs App)
+    function switchTab(tab) {
+      const viewLanding = document.getElementById('viewLanding');
+      const viewApp = document.getElementById('viewApp');
+      const btnLanding = document.getElementById('btnTabLanding');
+      const btnApp = document.getElementById('btnTabApp');
+      const dashSearch = document.getElementById('dashSearch');
+      const landingNav = document.getElementById('landingNav');
+
+      if (tab === 'app') {
+        viewLanding.classList.add('hidden');
+        viewApp.classList.remove('hidden');
+        btnApp.classList.add('ring-2', 'ring-zinc-900', 'ring-offset-2');
+        btnLanding.classList.remove('bg-zinc-200');
+        dashSearch.classList.remove('hidden');
+        landingNav.classList.add('hidden');
+      } else {
+        viewLanding.classList.remove('hidden');
+        viewApp.classList.add('hidden');
+        btnApp.classList.remove('ring-2', 'ring-zinc-900', 'ring-offset-2');
+        dashSearch.classList.add('hidden');
+        landingNav.classList.remove('hidden');
+      }
+    }
+
+    // Modal Control Helper
+    function toggleModal(modalId, show) {
+      document.getElementById(modalId).classList.toggle('hidden', !show);
+    }
+
+    // Handle Uploading Files via Input / Drag-Drop
+    function handleFiles(files) {
+      const selectedTag = document.getElementById('selectedTag').value;
+
+      Array.from(files).forEach(file => {
+        const isImage = file.type.startsWith('image/');
+        const sizeMB = parseFloat((file.size / (1024 * 1024)).toFixed(2)) || 1.5;
+
+        const newFile = {
+          id: Date.now() + Math.random(),
+          name: file.name,
+          type: isImage ? 'image' : 'document',
+          tag: selectedTag,
+          sizeMB: sizeMB,
+          url: isImage ? URL.createObjectURL(file) : '',
+          date: new Date().toISOString().split('T')[0]
+        };
+        fileList.unshift(newFile);
+      });
+
+      renderFiles();
+    }
+
+    // Main Render Function for Grid and Storage Meter
+    function renderFiles() {
+      const container = document.getElementById('fileContainer');
+      const searchVal = document.getElementById('searchInput').value.toLowerCase();
+      container.innerHTML = '';
+
+      let totalMB = 0;
+      let cntAll = 0, cntImg = 0, cntDoc = 0;
+
+      fileList.forEach(f => {
+        totalMB += f.sizeMB;
+        cntAll++;
+        if (f.type === 'image') cntImg++;
+        if (f.type === 'document') cntDoc++;
+      });
+
+      // Update Dashboard Counters
+      document.getElementById('cnt-all').innerText = cntAll;
+      document.getElementById('cnt-image').innerText = cntImg;
+      document.getElementById('cnt-document').innerText = cntDoc;
+
+      // Update Storage Progress Meter
+      const usedText = totalMB > 1024 ? `${(totalMB / 1024).toFixed(1)} GB` : `${totalMB.toFixed(1)} MB`;
+      const percent = Math.min(100, ((totalMB / MAX_STORAGE_MB) * 100).toFixed(1));
+      document.getElementById('storageText').innerText = `${usedText} / 15 GB`;
+      document.getElementById('storageBar').style.width = `${percent}%`;
+
+      // Filter Logic Execution
+      let filtered = fileList.filter(f => {
+        const matchCat = currentCategory === 'all' || f.type === currentCategory;
+        const matchTag = !currentTag || f.tag === currentTag;
+        const matchSearch = f.name.toLowerCase().includes(searchVal) || f.tag.toLowerCase().includes(searchVal);
+        return matchCat && matchTag && matchSearch;
+      });
+
+      // Display Empty State if no files match
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-16 text-center border border-dashed border-zinc-200 rounded-2xl bg-white">
+            <i data-lucide="image-off" class="w-8 h-8 mx-auto text-zinc-300 mb-2"></i>
+            <p class="text-xs font-semibold text-zinc-500">Không tìm thấy hình ảnh hoặc tài liệu phù hợp</p>
+          </div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      // Render Dynamic File Cards
+      filtered.forEach(file => {
+        const card = document.createElement('div');
+        card.className = "bg-white border border-zinc-200/90 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between group";
+
+        if (file.type === 'image') {
+          card.innerHTML = `
+            <div class="h-36 bg-zinc-100 overflow-hidden relative cursor-pointer" onclick="openPreview('${file.url}', '${file.name}')">
+              <img src="${file.url || 'https://via.placeholder.com/300'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+              <span class="absolute top-2 right-2 bg-zinc-900/80 backdrop-blur-sm text-white text-[10px] font-medium px-2 py-0.5 rounded-md">#${file.tag}</span>
+            </div>
+            <div class="p-3">
+              <p class="text-xs font-semibold text-zinc-900 truncate" title="${file.name}">${file.name}</p>
+              <div class="flex items-center justify-between mt-2 text-[11px] text-zinc-400">
+                <span>${file.sizeMB} MB</span>
+                <div class="flex items-center gap-1.5">
+                  <button onclick="copyLink('${file.name}')" title="Sao chép tên" class="hover:text-zinc-700"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+                  <button onclick="deleteFile(${file.id})" title="Xóa" class="hover:text-red-600"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          card.innerHTML = `
+            <div class="p-4 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="p-2.5 bg-zinc-100 text-zinc-800 rounded-xl">
+                    <i data-lucide="file-text" class="w-5 h-5"></i>
+                  </div>
+                  <span class="bg-zinc-100 text-zinc-600 text-[10px] font-medium px-2 py-0.5 rounded-md">#${file.tag}</span>
+                </div>
+                <p class="text-xs font-semibold text-zinc-900 truncate" title="${file.name}">${file.name}</p>
+                <p class="text-[10px] text-zinc-400 mt-1">${file.sizeMB} MB • ${file.date}</p>
+              </div>
+              <div class="flex items-center justify-between mt-4 pt-2 border-t border-zinc-100 text-xs">
+                <span class="text-[10px] font-medium text-zinc-400 uppercase">Document</span>
+                <button onclick="deleteFile(${file.id})" title="Xóa" class="text-zinc-400 hover:text-red-600 transition">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+          `;
+        }
+        container.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    // Category and Tag Filters Handling
+    function setFilter(cat) {
+      currentCategory = cat;
+      const cats = ['all', 'image', 'document'];
+      cats.forEach(c => {
+        const btn = document.getElementById(`cat-${c}`);
+        if (c === cat) {
+          btn.className = "w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium bg-zinc-900 text-white shadow-sm";
+        } else {
+          btn.className = "w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-100 transition";
+        }
+      });
+      renderFiles();
+    }
+
+    function setTagFilter(tag) {
+      currentTag = tag;
+      document.getElementById('activeTagBadge').classList.remove('hidden');
+      document.getElementById('activeTagText').innerText = `#${tag}`;
+      renderFiles();
+    }
+
+    function clearTagFilter() {
+      currentTag = null;
+      document.getElementById('activeTagBadge').classList.add('hidden');
+      renderFiles();
+    }
+
+    function deleteFile(id) {
+      fileList = fileList.filter(f => f.id !== id);
+      renderFiles();
+    }
+
+    function openPreview(url, name) {
+      if (!url) return;
+      document.getElementById('previewImage').src = url;
+      document.getElementById('previewTitle').innerText = name;
+      toggleModal('previewModal', true);
+    }
+
+    function copyLink(text) {
+      navigator.clipboard.writeText(text);
+      alert('Đã sao chép tên tệp: ' + text);
+    }
+  </script>
+</body>
+</html>

@@ -620,3 +620,206 @@
     </script>
   </body>
 </html>
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloudVault - Lưu trữ & Quản lý dữ liệu thông minh</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-zinc-50 text-zinc-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-zinc-200 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="bg-blue-600 text-white p-2 rounded-xl font-bold text-lg">CV</div>
+        <span class="font-bold text-xl text-zinc-900">CloudVault</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span id="userStorageText" class="text-sm text-zinc-600">Dung lượng: <strong class="text-blue-600">16.6 MB / 15 GB</strong></span>
+        <button onclick="openPricingModal()" class="px-4 py-2 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white text-sm font-medium rounded-xl shadow transition">
+          🚀 Nâng cấp 50GB (33k)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
+    <!-- Hero Banner / Thanh trạng thái dung lượng -->
+    <div class="bg-white border border-zinc-200 rounded-2xl p-6 shadow-sm mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-zinc-900 mb-1">Kho lưu trữ cá nhân</h1>
+        <p class="text-zinc-500 text-sm">Quản lý, tải lên và phân loại hình ảnh, tài liệu an toàn tuyệt đối.</p>
+      </div>
+      <div class="w-full md:w-72 bg-zinc-100 p-4 rounded-xl border border-zinc-200">
+        <div class="flex justify-between text-xs text-zinc-600 mb-1">
+          <span>Đã sử dụng</span>
+          <span id="storageLimitText">15 GB</span>
+        </div>
+        <div class="w-full bg-zinc-200 h-2 rounded-full overflow-hidden">
+          <div id="storageBar" class="bg-blue-600 h-full w-[1%] transition-all duration-500"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Khu vực tải tệp lên -->
+    <div class="bg-white border-2 border-dashed border-zinc-300 rounded-2xl p-8 text-center hover:border-blue-500 transition mb-8 cursor-pointer relative" onclick="document.getElementById('fileInput').click()">
+      <input type="file" id="fileInput" class="hidden" onchange="handleFileUpload(event)">
+      <div class="mx-auto w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-xl mb-3 font-bold">↑</div>
+      <h3 class="font-bold text-zinc-800 text-lg mb-1">Nhấn để tải tệp lên hoặc kéo thả vào đây</h3>
+      <p class="text-zinc-400 text-sm">Hỗ trợ hình ảnh, video, tài liệu định dạng bất kỳ</p>
+    </div>
+
+    <!-- Danh sách tệp -->
+    <h2 class="text-lg font-bold text-zinc-900 mb-4">Tệp của bạn</h2>
+    <div id="fileListContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <!-- Dữ liệu mẫu -->
+      <div class="bg-white border border-zinc-200 rounded-xl p-4 flex items-center justify-between shadow-sm">
+        <div class="flex items-center space-x-3 overflow-hidden">
+          <div class="w-10 h-10 bg-pink-50 text-pink-600 rounded-lg flex items-center justify-center font-bold text-sm">IMG</div>
+          <div class="truncate">
+            <p class="font-medium text-sm text-zinc-800 truncate">Anh_Ky_Yeu_Lop.jpg</p>
+            <span class="text-xs text-zinc-400">6.8 MB</span>
+          </div>
+        </div>
+        <button onclick="this.closest('div.bg-white').remove()" class="text-zinc-400 hover:text-red-500 text-sm">🗑️</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-zinc-200 py-6 text-center text-sm text-zinc-500">
+    <p>© 2026 CloudVault. All rights reserved.</p>
+  </footer>
+
+  <!-- ================= MODAL BẢNG GIÁ ================= -->
+  <div id="pricingModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="closePricingModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 font-bold text-lg">✕</button>
+      <h3 class="text-xl font-bold text-zinc-900 mb-1 text-center">Nâng cấp dung lượng</h3>
+      <p class="text-zinc-500 text-center text-sm mb-6">Mở rộng không gian lưu trữ của bạn ngay lập tức</p>
+
+      <!-- Gói 50GB -->
+      <div class="border-2 border-pink-500 rounded-2xl p-5 bg-pink-50/20 relative">
+        <span class="absolute -top-3 right-4 bg-pink-600 text-white text-xs px-2 py-1 rounded-full font-bold">Phổ biến</span>
+        <h4 class="font-bold text-lg text-zinc-800">Gói Tiết Kiệm (50GB)</h4>
+        <p class="text-3xl font-extrabold text-pink-600 my-2">33.000đ <span class="text-sm font-normal text-zinc-500">/ tháng</span></p>
+        <ul class="text-sm text-zinc-600 space-y-2 mb-5">
+          <li>✅ Dung lượng lưu trữ: <strong>50 GB</strong></li>
+          <li>✅ Tốc độ tải lên/tải xuống tối đa</li>
+          <li>✅ Hỗ trợ thanh toán nhanh qua MoMo</li>
+        </ul>
+        <button onclick="openMomoCheckout('Gói 50GB 50GB', 33000, 50)" class="w-full py-3 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-xl transition shadow-md">
+          Thanh toán qua MoMo (33k)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL MOMO QR CHECKOUT ================= -->
+  <div id="momoModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative text-center">
+      <button onclick="closeMomoModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 font-bold text-lg">✕</button>
+      
+      <div class="flex items-center justify-center space-x-2 mb-2">
+        <div class="bg-pink-600 text-white px-3 py-1 rounded-lg font-bold text-sm">MoMo</div>
+        <h3 class="text-xl font-bold text-zinc-900">Quét mã thanh toán</h3>
+      </div>
+      
+      <p class="text-xs text-zinc-500 mb-4">Sử dụng ứng dụng MoMo hoặc ngân hàng để quét mã bên dưới</p>
+
+      <!-- Khung chứa QR Code cá nhân của bạn -->
+      <div class="bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-2xl p-3 inline-block mb-4">
+        <img id="momoQrImg" src="17933.jpg" alt="QR MoMo Tran Trung Hau" class="w-48 h-48 mx-auto object-contain rounded-xl shadow-sm">
+      </div>
+
+      <div class="bg-pink-50 p-3 rounded-xl text-left text-sm text-zinc-700 mb-5 space-y-1">
+        <p>📌 <strong>Gói cước:</strong> <span id="momoPlanName">Gói 50GB</span></p>
+        <p>💰 <strong>Số tiền:</strong> <span id="momoAmount" class="font-bold text-pink-600">33.000đ</span></p>
+        <p>👤 <strong>Chủ tài khoản:</strong> TRAN TRUNG HAU</p>
+      </div>
+
+      <button onclick="confirmPaymentSuccess()" class="w-full py-3 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-xl transition shadow-lg">
+        Đã chuyển khoản / Kích hoạt ngay
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT XỬ LÝ TÍNH NĂNG ================= -->
+  <script>
+    let maxStorageGB = 15; // Mặc định 15GB
+    let currentUploadedMB = 16.6;
+
+    function openPricingModal() {
+      document.getElementById('pricingModal').classList.remove('hidden');
+      document.getElementById('pricingModal').classList.add('flex');
+    }
+
+    function closePricingModal() {
+      document.getElementById('pricingModal').classList.add('hidden');
+      document.getElementById('pricingModal').classList.remove('flex');
+    }
+
+    function openMomoCheckout(planName, amount, storageGB) {
+      maxStorageGB = storageGB;
+      document.getElementById('momoPlanName').innerText = planName;
+      document.getElementById('momoAmount').innerText = amount.toLocaleString('vi-VN') + 'đ';
+      
+      closePricingModal();
+
+      const momoModal = document.getElementById('momoModal');
+      momoModal.classList.remove('hidden');
+      momoModal.classList.add('flex');
+    }
+
+    function closeMomoModal() {
+      const momoModal = document.getElementById('momoModal');
+      momoModal.classList.add('hidden');
+      momoModal.classList.remove('flex');
+    }
+
+    function confirmPaymentSuccess() {
+      alert(`🎉 Thanh toán thành công! Dung lượng của bạn đã được nâng cấp lên ${maxStorageGB} GB.`);
+      closeMomoModal();
+      updateStorageUI();
+    }
+
+    function updateStorageUI() {
+      document.getElementById('storageLimitText').innerText = maxStorageGB + ' GB';
+      document.getElementById('userStorageText').innerHTML = `Dung lượng: <strong class="text-blue-600">${currentUploadedMB} MB / ${maxStorageGB} GB</strong>`;
+      let percent = (currentUploadedMB / (maxStorageGB * 1024)) * 100;
+      document.getElementById('storageBar').style.width = percent + '%';
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const container = document.getElementById('fileListContainer');
+      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+      
+      currentUploadedMB = (parseFloat(currentUploadedMB) + parseFloat(fileSizeMB)).toFixed(1);
+      updateStorageUI();
+
+      const fileItem = document.createElement('div');
+      fileItem.className = "bg-white border border-zinc-200 rounded-xl p-4 flex items-center justify-between shadow-sm";
+      fileItem.innerHTML = `
+        <div class="flex items-center space-x-3 overflow-hidden">
+          <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center font-bold text-sm">FILE</div>
+          <div class="truncate">
+            <p class="font-medium text-sm text-zinc-800 truncate">${file.name}</p>
+            <span class="text-xs text-zinc-400">${fileSizeMB} MB</span>
+          </div>
+        </div>
+        <button onclick="this.closest('div.bg-white').remove()" class="text-zinc-400 hover:text-red-500 text-sm">🗑️</button>
+      `;
+      container.prepend(fileItem);
+      alert(`Tải lên thành công tệp: ${file.name}`);
+    }
+  </script>
+</body>
+</html>
